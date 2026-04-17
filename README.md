@@ -88,7 +88,7 @@ Resolve-DnsName lab.local
 
 ### OU Structure
 
-The domain was segmented into OUs reflecting a real enterprise layout — 
+The domain was segmented into OUs reflecting a real enterprise layout, 
 separating administrative accounts from standard users, and organizing 
 computers and groups independently for targeted GPO application:
 
@@ -130,7 +130,7 @@ New-ADOrganizationalUnit -Name "HelpDesk" -Path "OU=Admins,OU=Corp,$base"
 ### Delegated Administration — Help Desk
 
 Help Desk staff were granted delegated control over the Users OU, limited 
-to password resets and account unlocks — without granting full Domain Admin 
+to password resets and account unlocks without granting full Domain Admin 
 rights:
 
 ```powershell
@@ -159,7 +159,7 @@ Permissions delegated to HelpDesk:
 
 1,000+ users were generated from a CSV file. Each user's `Department` 
 field drove automatic assignment to the corresponding role-based security 
-group and OU — eliminating manual account creation and enforcing consistent 
+group and OU, eliminating manual account creation and enforcing consistent 
 group membership at provisioning time.
 
 **users.csv sample:**
@@ -483,7 +483,7 @@ Azure Portal > Microsoft Entra ID > Security > Conditional Access >
 
 > **Note:** This was implemented as a standalone extension using a free 
 > Microsoft Entra ID tenant to understand cloud identity models alongside 
-> on-premises Active Directory — not as a live sync with the lab domain.
+> on-premises Active Directory instead of a live sync with the lab domain.
 
 ---
 
@@ -491,7 +491,7 @@ Azure Portal > Microsoft Entra ID > Security > Conditional Access >
 
 This section documents real failure scenarios reproduced in the lab, 
 how they were diagnosed, and how they were resolved. All diagnosis 
-involved a combination of Event Viewer and PowerShell — matching the 
+involved a combination of Event Viewer and PowerShell, matching the 
 workflow used in real enterprise helpdesk and junior sysadmin roles.
 
 ---
@@ -610,7 +610,7 @@ Get-WinEvent -FilterHashtable @{
 ```
 
 In Event Viewer, Event ID `4740` (account locked out) will show the 
-caller computer name — identifying which machine is triggering the 
+caller computer name, identifying which machine is triggering the 
 failed authentications (e.g., a saved stale credential on a shared 
 workstation).
 
@@ -666,7 +666,7 @@ Event ID 5145 (network share access check)
 
 **Root Cause:** The NTFS permissions on `C:\Shares\Finance` granted 
 access to `Finance-Staff`, but the SMB share permission was locked 
-down to `IT-Admins` only — blocking all other users at the share 
+down to `IT-Admins` only, blocking all other users at the share 
 layer before NTFS permissions were even evaluated.
 
 **Resolution:**
