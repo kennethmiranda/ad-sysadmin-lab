@@ -1356,7 +1356,7 @@ Trial must be activated on the same tenant where Conditional Access will be used
  
 ---
  
-### Issue 19 -- SignInLogs Table Name Capitalization
+### Issue 19 -- SigninLogs Table Name Capitalization
  
 **Symptom:** KQL query fails with SEM0100 semantic error.
  
@@ -1368,7 +1368,7 @@ Trial must be activated on the same tenant where Conditional Access will be used
  
 ### Issue 20 -- AuditLogs Category Value Differs From Expected
  
-**Symptom:** `where Category == "UserManagement"` returns no results.
+**Symptom:** `where Category == "__Management"` returns no results.
  
 **Root Cause:** Category values depend on what activity has occurred in the tenant.
  
