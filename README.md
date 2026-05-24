@@ -24,74 +24,6 @@ with Microsoft Entra ID to reflect modern hybrid identity practices.
  
 ---
  
-## Screenshots
- 
-### Domain Controller & Active Directory
- 
-| Description | Screenshot |
-|-------------|------------|
-| ADUC showing full OU tree with populated users | <!-- screenshot --> |
-| Bulk provisioning script output in PowerShell | <!-- screenshot --> |
-| Security groups in Groups OU | <!-- screenshot --> |
-| Help Desk delegation ACL verified in PowerShell | <!-- screenshot --> |
- 
-### Group Policy
- 
-| Description | Screenshot |
-|-------------|------------|
-| GPMC showing GPOs linked to Corp and Workstations OUs | <!-- screenshot --> |
-| gpresult /r /scope computer showing all GPOs applied | <!-- screenshot --> |
-| Workstation-Hardening GPO settings | <!-- screenshot --> |
-| Audit-Logging-Baseline GPO settings | <!-- screenshot --> |
- 
-### WSUS
- 
-| Description | Screenshot |
-|-------------|------------|
-| WSUS console showing computer groups | <!-- screenshot --> |
-| Auto-approval rule configured | <!-- screenshot --> |
-| Synchronization status showing successful sync | <!-- screenshot --> |
- 
-### IIS & ADCS
- 
-| Description | Screenshot |
-|-------------|------------|
-| IIS Manager showing Intranet site with HTTP and HTTPS bindings | <!-- screenshot --> |
-| Browser showing https://intranet.lab.local with no certificate warning | <!-- screenshot --> |
-| Certification Authority console showing issued certificate | <!-- screenshot --> |
-| Revoked Certificates list in certsrv.msc | <!-- screenshot --> |
- 
-### Microsoft Entra ID
- 
-| Description | Screenshot |
-|-------------|------------|
-| Entra ID test user profile with MFA enabled | <!-- screenshot --> |
-| Conditional Access policy in Report-only mode | <!-- screenshot --> |
-| Sign-in log showing Report-only: Success on policy evaluation | <!-- screenshot --> |
- 
-### Azure Monitor & Log Analytics
- 
-| Description | Screenshot |
-|-------------|------------|
-| Log Analytics workspace overview | <!-- screenshot --> |
-| KQL query — all sign-ins in last 24 hours | <!-- screenshot --> |
-| KQL query — failed sign-ins with ResultType 50126 | <!-- screenshot --> |
-| KQL query — brute force detection results | <!-- screenshot --> |
-| Alert rule configured in Azure Monitor | <!-- screenshot --> |
- 
-### Troubleshooting Practice
- 
-| Description | Screenshot |
-|-------------|------------|
-| Scenario A — gpresult showing GPOs missing before fix | <!-- screenshot --> |
-| Scenario A — gpresult showing GPOs applied after fix | <!-- screenshot --> |
-| Scenario B — Get-ADUser showing LockedOut: True | <!-- screenshot --> |
-| Scenario B — Account unlocked successfully | <!-- screenshot --> |
-| Scenario C — 503 error in browser | <!-- screenshot --> |
-| Scenario C — App pool state confirmed stopped via PowerShell | <!-- screenshot --> |
- 
----
- 
 ## Table of Contents
  
 1. [Domain Controller Deployment](#1-domain-controller-deployment)
@@ -160,6 +92,9 @@ Get-ADDomainController
 Resolve-DnsName lab.local
 ```
  
+![Get-ADDomain confirming domain promotion](screenshots/3-1.png)
+![Get-ADDomainController and Resolve-DnsName lab.local](screenshots/3-2.png)
+ 
 ---
  
 ## 2. OU Design & Delegated Administration
@@ -201,6 +136,8 @@ New-ADOrganizationalUnit -Name "Admins"       -Path "OU=Corp,$base"
 New-ADOrganizationalUnit -Name "HelpDesk"     -Path "OU=Admins,OU=Corp,$base"
 ```
  
+![OU creation commands running in PowerShell](screenshots/7.png)
+ 
 ### Delegated Administration — Help Desk
  
 Help Desk staff were granted delegated control over the Users OU using the
@@ -220,6 +157,8 @@ Permissions delegated to HelpDesk:
 - Reset passwords on user objects
 - Read/write `lockoutTime` (unlock accounts)
 - Read all user attributes
+![Active Directory Users and Computers showing full OU tree with populated users](screenshots/4.png)
+ 
 ---
  
 ## 3. PowerShell Automation
@@ -247,6 +186,8 @@ Sarah,Nguyen,Sales,Account Executive
 ```
  
 **Provisioning script (save as C:\Scripts\provision-users.ps1):**
+ 
+![Full provision-users.ps1 script](screenshots/6-2.png)
  
 ```powershell
 $roleMap = @{
@@ -298,6 +239,8 @@ Set-ExecutionPolicy RemoteSigned -Force
 C:\Scripts\provision-users.ps1
 ```
  
+![Provisioning script running in PowerShell with user creation output](screenshots/6-1.png)
+ 
 ### Verify Provisioning
  
 ```powershell
@@ -324,6 +267,8 @@ New-ADGroup -Name "Sales-Staff"   -GroupScope Global -Path $groupOU
 New-ADGroup -Name "HelpDesk"      -GroupScope Global -Path $groupOU
 New-ADGroup -Name "IT-Admins"     -GroupScope Global -Path $groupOU
 ```
+ 
+![New-ADGroup commands and group listing in PowerShell](screenshots/5.png)
  
 ### Role Permissions Summary
  
@@ -359,6 +304,9 @@ using `gpresult` and Event Viewer.
 | Account lockout threshold   | 5 attempts |
 | Lockout duration            | 30 minutes |
 | Reset lockout counter after | 15 minutes |
+ 
+![Group Policy Management Editor showing password policies](screenshots/8-1.png)
+![Group Policy Management showing account lockout policies](screenshots/8-2.png)
  
 ### Workstation Hardening GPO
  
@@ -418,6 +366,9 @@ Get-WinEvent -FilterHashtable @{
 } | Select-Object TimeCreated, Message | Format-List
 ```
  
+![Corp OU Linked Group Policy Objects showing Audit-Logging-Baseline](screenshots/8-3.png)
+![Workstations OU Linked Group Policy Objects](screenshots/8-4.png)
+ 
 ---
  
 ## 6. Client Integration
@@ -434,6 +385,8 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" `
  
 Add-Computer -DomainName "lab.local" -Credential (Get-Credential) -Restart
 ```
+ 
+![Set-DnsClientServerAddress pointing client at DC](screenshots/9-2.png)
  
 ### Move Computer Object to Correct OU
  
@@ -457,6 +410,8 @@ gpupdate /force
 gpresult /r /scope computer
 ```
  
+![Applied Group Policy Objects showing all four GPOs on client](screenshots/9-3.png)
+ 
 ---
  
 ## 7. Patch Management with WSUS
@@ -476,6 +431,8 @@ Install-WindowsFeature -Name UpdateServices, UpdateServices-WidDB, `
   -IncludeManagementTools
 ```
  
+![Install-WindowsFeature for WSUS role](screenshots/10-1.png)
+ 
 ### Run Post-Install Configuration
  
 ```powershell
@@ -491,6 +448,8 @@ If the console shows only Update Services with no server listed:
 2. Server name: `DC01` | Port: `8530` | Click **Connect**
 > **If connection fails:** Verify IIS is running. WSUS serves its interface through
 > IIS on port 8530. Run `Start-Service W3SVC` if stopped.
+ 
+![Synchronization Error Details — HTTP error encountered during initial sync](screenshots/10-issue.png)
  
 ### Product Selection
  
@@ -551,6 +510,8 @@ $wsus.GetComputerTargets() |
   Select-Object FullDomainName, LastSyncTime, LastReportedStatusTime |
   Format-Table -AutoSize
 ```
+ 
+![Updates compliance report for DC01](screenshots/10-3.png)
  
 ---
  
@@ -634,7 +595,7 @@ $binding = Get-WebBinding -Name "Intranet" -Protocol "https"
 $binding.AddSslCertificate($cert.Thumbprint, "My")
 ```
  
-### Troubleshooting -- 503 Service Unavailable
+![intranet.lab.local showing Not Secure with self-signed certificate](screenshots/11.png) Service Unavailable
  
 ```powershell
 Get-WebConfigurationProperty `
@@ -721,6 +682,8 @@ $binding = Get-WebBinding -Name "Intranet" -Protocol "https"
 $binding.AddSslCertificate($thumbprint, "My")
 ```
  
+![https://intranet.lab.local loading with no certificate warning after CA-issued cert](screenshots/12-1.png)
+ 
 > **Note:** Remove-WebBinding requires the HostHeader parameter when the binding
 > was created with a host header. Omitting it causes "Cannot find binding" errors.
  
@@ -743,6 +706,8 @@ certutil -crl
 ```
  
 Verify in `certsrv.msc` > Revoked Certificates.
+ 
+![Revoked Certificates list in certsrv.msc](screenshots/12-2.png)
  
 ---
  
@@ -784,6 +749,9 @@ entra.microsoft.com > Users > Per-user MFA > Select user > Enable MFA
  
 Verified by signing into myapps.microsoft.com and registering Microsoft Authenticator.
  
+![Users list showing admin account and Test User](screenshots/13-3.png)
+![Per-user MFA showing Test User status as Enforced](screenshots/13-4.png)
+ 
 ### Conditional Access Policy
  
 ```
@@ -801,6 +769,9 @@ Sign in as test user at myapps.microsoft.com in an InPrivate window. In sign-in 
  
 - **Not Applied** -- policy not in enforcement mode, expected behavior in report-only
 - **Report-only: Success** -- policy evaluated correctly and would require MFA if enforced
+![Entra ID sign-in logs for Test User](screenshots/13-1.png)
+![Activity Details showing Report-only: Success on Conditional Access evaluation](screenshots/13-2.png)
+ 
 > This is the correct way to test Conditional Access. Report-only first confirms
 > expected behavior before enforcement. Enabling enforcement without testing risks
 > locking users out including the admin account.
@@ -838,6 +809,9 @@ entra.microsoft.com > Monitoring & health > Diagnostic settings >
  
 Allow 15-30 minutes for logs to begin flowing. Generate sign-in activity before querying.
  
+![lab-log-analytics workspace overview](screenshots/14-1.png)
+![Diagnostic settings showing logs and destination configuration](screenshots/14-2.png)
+ 
 ### Verify Table Names Before Querying
  
 ```kql
@@ -861,6 +835,8 @@ SigninLogs
 | order by TimeGenerated desc
 ```
  
+![KQL query — all sign-ins in last 24 hours](screenshots/14-3.png)
+ 
 **Failed sign-ins only:**
  
 ```kql
@@ -871,6 +847,8 @@ SigninLogs
     ResultDescription, IPAddress, Location
 | order by TimeGenerated desc
 ```
+ 
+![KQL query — failed sign-ins only](screenshots/14-4.png)
  
 **Brute force detection:**
  
@@ -883,6 +861,8 @@ SigninLogs
 | order by FailedAttempts desc
 ```
  
+![KQL query — count failed attempts per user](screenshots/14-5.png)
+ 
 **Audit log -- management changes:**
  
 ```kql
@@ -893,6 +873,8 @@ AuditLogs
     InitiatedBy, TargetResources
 | order by TimeGenerated desc
 ```
+ 
+![KQL query — AuditLogs GroupManagement changes](screenshots/14-6.png)
  
 > **Note:** AuditLogs Category values vary by tenant activity. Run
 > `AuditLogs | distinct Category` first to find available categories.
@@ -923,6 +905,10 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
   Name: Brute Force Detection - Failed Sign-Ins
 ```
  
+![Alert rule showing all configured settings](screenshots/14-7.png)
+![Alert email notification received](screenshots/14-8.png)
+![lab-log-analytics Alerts overview showing brute force detection fired](screenshots/14-10.png)
+ 
 ### Investigation Simulation
  
 1. Fail login as testuser 6-7 times at myapps.microsoft.com
@@ -933,6 +919,9 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
 > The brute force query summarizes into one row per user showing only the count.
 > Run the raw failed sign-ins query separately to see individual ResultType codes.
 > ResultType 50126 confirms wrong password rather than a more serious incident.
+ 
+![SigninLogs confirming ResultType 50126 — invalid credentials](screenshots/14-9.png)
+![AuditLogs query showing no system changes in the same window](screenshots/14-11.png)
  
 ---
  
@@ -955,6 +944,8 @@ gpresult /r /scope computer
  
 GPOs will be absent from Applied Group Policy Objects.
  
+![Scenario A — Applied GPOs before fix showing only Default Domain Policy](screenshots/15-2.png)
+ 
 **Fix it:**
  
 ```powershell
@@ -968,6 +959,8 @@ Get-ADComputer "WIN11-CLIENT" | Move-ADObject `
 gpupdate /force
 gpresult /r /scope computer
 ```
+ 
+![Scenario A — all four GPOs applied after fix](screenshots/15-1.png)
  
 > **Note:** Always use `gpresult /r /scope computer` not `gpresult /r` when running
 > elevated as a different account than the logged-in user.
@@ -988,6 +981,9 @@ Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 4740 } |
  
 Event ID 4740 shows which machine triggered the lockout.
  
+![Scenario B — referenced account is currently locked out error](screenshots/15-3.png)
+![Scenario B — LockedOut status confirmed in PowerShell](screenshots/15-4.png)
+ 
 **Fix it:**
  
 ```powershell
@@ -996,6 +992,8 @@ Unlock-ADAccount -Identity "jcarter"
 Get-ADUser "jcarter" -Properties LockedOut |
   Select-Object Name, LockedOut
 ```
+ 
+![Scenario B — account unlocked and LockedOut: False verified](screenshots/15-5.png)
  
 ### Scenario C -- IIS App Pool Stops
  
@@ -1006,6 +1004,8 @@ Stop-WebAppPool -Name "DefaultAppPool"
 ```
  
 Browse to `http://intranet.lab.local` -- returns 503.
+ 
+![Scenario C — Service Unavailable HTTP 503](screenshots/15-6.png)
  
 **Diagnose:**
  
@@ -1026,6 +1026,8 @@ Start-WebAppPool -Name "DefaultAppPool"
 Invoke-WebRequest -Uri "http://intranet.lab.local" -UseBasicParsing |
   Select-Object StatusCode
 ```
+ 
+![Scenario C — intranet.lab.local restored and loading correctly](screenshots/15-7.png)
  
 ### Scenario D -- DNS Misconfiguration
  
@@ -1056,6 +1058,8 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ServerAddresses 192.168
 ipconfig /flushdns
 Resolve-DnsName intranet.lab.local
 ```
+ 
+![Scenario D — Set-DnsClientServerAddress and ipconfig /all confirming DNS restored](screenshots/16.png)
  
 > **Lab Note:** In this VirtualBox environment the site remained accessible after
 > DNS was changed due to VirtualBox NAT assigning IP 10.0.0.10 to the client,
@@ -1159,6 +1163,8 @@ If EFI shell appears, type: `FS0:\EFI\BOOT\BOOTX64.EFI`
    - `BypassSecureBootCheck`
    - `BypassRAMCheck`
 5. Close Registry Editor > click Back then Next
+![Registry Editor showing LabConfig TPM bypass keys](screenshots/9.png)
+ 
 ---
  
 ### Issue 7 -- Get-ADComputer Cannot Find WIN11-CLIENT
