@@ -682,7 +682,7 @@ $binding = Get-WebBinding -Name "Intranet" -Protocol "https"
 $binding.AddSslCertificate($thumbprint, "My")
 ```
  
-![https://intranet.lab.local loading with no certificate warning after CA-issued cert](screenshots/12-1.png)
+![https://intranet.lab.local loading with no certificate warning after CA-issued cert](screenshots/12-1.PNG)
  
 > **Note:** Remove-WebBinding requires the HostHeader parameter when the binding
 > was created with a host header. Omitting it causes "Cannot find binding" errors.
@@ -707,7 +707,7 @@ certutil -crl
  
 Verify in `certsrv.msc` > Revoked Certificates.
  
-![Revoked Certificates list in certsrv.msc](screenshots/12-2.png)
+![Revoked Certificates list in certsrv.msc](screenshots/12-2.PNG)
  
 ---
  
@@ -769,8 +769,8 @@ Sign in as test user at myapps.microsoft.com in an InPrivate window. In sign-in 
  
 - **Not Applied** -- policy not in enforcement mode, expected behavior in report-only
 - **Report-only: Success** -- policy evaluated correctly and would require MFA if enforced
-![Entra ID sign-in logs for Test User](screenshots/13-1.png)
-![Activity Details showing Report-only: Success on Conditional Access evaluation](screenshots/13-2.png)
+![Entra ID sign-in logs for Test User](screenshots/13-1.PNG)
+![Activity Details showing Report-only: Success on Conditional Access evaluation](screenshots/13-2.PNG)
  
 > This is the correct way to test Conditional Access. Report-only first confirms
 > expected behavior before enforcement. Enabling enforcement without testing risks
@@ -809,8 +809,8 @@ entra.microsoft.com > Monitoring & health > Diagnostic settings >
  
 Allow 15-30 minutes for logs to begin flowing. Generate sign-in activity before querying.
  
-![lab-log-analytics workspace overview](screenshots/14-1.png)
-![Diagnostic settings showing logs and destination configuration](screenshots/14-2.png)
+![lab-log-analytics workspace overview](screenshots/14-1.PNG)
+![Diagnostic settings showing logs and destination configuration](screenshots/14-2.PNG)
  
 ### Verify Table Names Before Querying
  
@@ -835,7 +835,7 @@ SigninLogs
 | order by TimeGenerated desc
 ```
  
-![KQL query — all sign-ins in last 24 hours](screenshots/14-3.png)
+![KQL query — all sign-ins in last 24 hours](screenshots/14-3.PNG)
  
 **Failed sign-ins only:**
  
@@ -848,7 +848,7 @@ SigninLogs
 | order by TimeGenerated desc
 ```
  
-![KQL query — failed sign-ins only](screenshots/14-4.png)
+![KQL query — failed sign-ins only](screenshots/14-4.PNG)
  
 **Brute force detection:**
  
@@ -861,7 +861,7 @@ SigninLogs
 | order by FailedAttempts desc
 ```
  
-![KQL query — count failed attempts per user](screenshots/14-5.png)
+![KQL query — count failed attempts per user](screenshots/14-5.PNG)
  
 **Audit log -- management changes:**
  
@@ -874,7 +874,7 @@ AuditLogs
 | order by TimeGenerated desc
 ```
  
-![KQL query — AuditLogs GroupManagement changes](screenshots/14-6.png)
+![KQL query — AuditLogs GroupManagement changes](screenshots/14-6.PNG)
  
 > **Note:** AuditLogs Category values vary by tenant activity. Run
 > `AuditLogs | distinct Category` first to find available categories.
@@ -905,9 +905,9 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
   Name: Brute Force Detection - Failed Sign-Ins
 ```
  
-![Alert rule showing all configured settings](screenshots/14-7.png)
-![Alert email notification received](screenshots/14-8.png)
-![lab-log-analytics Alerts overview showing brute force detection fired](screenshots/14-10.png)
+![Alert rule showing all configured settings](screenshots/14-7.PNG)
+![Alert email notification received](screenshots/14-8.PNG)
+![lab-log-analytics Alerts overview showing brute force detection fired](screenshots/14-10.PNG)
  
 ### Investigation Simulation
  
@@ -920,8 +920,8 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
 > Run the raw failed sign-ins query separately to see individual ResultType codes.
 > ResultType 50126 confirms wrong password rather than a more serious incident.
  
-![SigninLogs confirming ResultType 50126 — invalid credentials](screenshots/14-9.png)
-![AuditLogs query showing no system changes in the same window](screenshots/14-11.png)
+![SigninLogs confirming ResultType 50126 — invalid credentials](screenshots/14-9.PNG)
+![AuditLogs query showing no system changes in the same window](screenshots/14-11.PNG)
  
 ---
  
@@ -944,7 +944,7 @@ gpresult /r /scope computer
  
 GPOs will be absent from Applied Group Policy Objects.
  
-![Scenario A — Applied GPOs before fix showing only Default Domain Policy](screenshots/15-2.png)
+![Scenario A — Applied GPOs before fix showing only Default Domain Policy](screenshots/15-2.PNG)
  
 **Fix it:**
  
@@ -960,7 +960,7 @@ gpupdate /force
 gpresult /r /scope computer
 ```
  
-![Scenario A — all four GPOs applied after fix](screenshots/15-1.png)
+![Scenario A — all four GPOs applied after fix](screenshots/15-1.PNG)
  
 > **Note:** Always use `gpresult /r /scope computer` not `gpresult /r` when running
 > elevated as a different account than the logged-in user.
@@ -981,8 +981,8 @@ Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 4740 } |
  
 Event ID 4740 shows which machine triggered the lockout.
  
-![Scenario B — referenced account is currently locked out error](screenshots/15-3.png)
-![Scenario B — LockedOut status confirmed in PowerShell](screenshots/15-4.png)
+![Scenario B — referenced account is currently locked out error](screenshots/15-3.PNG)
+![Scenario B — LockedOut status confirmed in PowerShell](screenshots/15-4.PNG)
  
 **Fix it:**
  
@@ -993,7 +993,7 @@ Get-ADUser "jcarter" -Properties LockedOut |
   Select-Object Name, LockedOut
 ```
  
-![Scenario B — account unlocked and LockedOut: False verified](screenshots/15-5.png)
+![Scenario B — account unlocked and LockedOut: False verified](screenshots/15-5.PNG)
  
 ### Scenario C -- IIS App Pool Stops
  
@@ -1005,7 +1005,7 @@ Stop-WebAppPool -Name "DefaultAppPool"
  
 Browse to `http://intranet.lab.local` -- returns 503.
  
-![Scenario C — Service Unavailable HTTP 503](screenshots/15-6.png)
+![Scenario C — Service Unavailable HTTP 503](screenshots/15-6.PNG)
  
 **Diagnose:**
  
@@ -1027,7 +1027,7 @@ Invoke-WebRequest -Uri "http://intranet.lab.local" -UseBasicParsing |
   Select-Object StatusCode
 ```
  
-![Scenario C — intranet.lab.local restored and loading correctly](screenshots/15-7.png)
+![Scenario C — intranet.lab.local restored and loading correctly](screenshots/15-7.PNG)
  
 ### Scenario D -- DNS Misconfiguration
  
