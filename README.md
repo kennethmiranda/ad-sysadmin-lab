@@ -770,6 +770,7 @@ Sign in as test user at myapps.microsoft.com in an InPrivate window. In sign-in 
  
 - **Not Applied** -- policy not in enforcement mode, expected behavior in report-only
 - **Report-only: Success** -- policy evaluated correctly and would require MFA if enforced
+
 ![Entra ID sign-in logs for Test User](screenshots/13-1.PNG)
 ![Activity Details showing Report-only: Success on Conditional Access evaluation](screenshots/13-2.PNG)
  
@@ -1162,6 +1163,7 @@ If EFI shell appears, type: `FS0:\EFI\BOOT\BOOTX64.EFI`
    - `BypassSecureBootCheck`
    - `BypassRAMCheck`
 5. Close Registry Editor > click Back then Next
+
 ![Registry Editor showing LabConfig TPM bypass keys](screenshots/9.png)
  
 ---
