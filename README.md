@@ -157,6 +157,7 @@ Permissions delegated to HelpDesk:
 - Reset passwords on user objects
 - Read/write `lockoutTime` (unlock accounts)
 - Read all user attributes
+
 ![Active Directory Users and Computers showing full OU tree with populated users](screenshots/4.png)
  
 ---
@@ -749,8 +750,8 @@ entra.microsoft.com > Users > Per-user MFA > Select user > Enable MFA
  
 Verified by signing into myapps.microsoft.com and registering Microsoft Authenticator.
  
-![Users list showing admin account and Test User](screenshots/13-3.png)
-![Per-user MFA showing Test User status as Enforced](screenshots/13-4.png)
+![Users list showing admin account and Test User](screenshots/13-3.PNG)
+![Per-user MFA showing Test User status as Enforced](screenshots/13-4.PNG)
  
 ### Conditional Access Policy
  
@@ -819,9 +820,6 @@ search *
 | distinct $table
 | sort by $table asc
 ```
- 
-> **Note:** The table name is `SigninLogs` (lowercase i), not `SignInLogs`.
-> KQL table names are case sensitive -- always verify exact names first.
  
 ### KQL Queries
  
