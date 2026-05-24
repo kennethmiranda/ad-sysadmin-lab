@@ -904,8 +904,6 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
 ```
  
 ![Alert rule showing all configured settings](screenshots/14-7.PNG)
-![Alert email notification received](screenshots/14-8.PNG)
-![lab-log-analytics Alerts overview showing brute force detection fired](screenshots/14-10.PNG)
  
 ### Investigation Simulation
  
@@ -917,7 +915,9 @@ portal.azure.com > Log Analytics workspace > Alerts > New alert rule:
 > The brute force query summarizes into one row per user showing only the count.
 > Run the raw failed sign-ins query separately to see individual ResultType codes.
 > ResultType 50126 confirms wrong password rather than a more serious incident.
- 
+
+![Alert email notification received](screenshots/14-8.PNG)
+![lab-log-analytics Alerts overview showing brute force detection fired](screenshots/14-10.PNG)
 ![SigninLogs confirming ResultType 50126 — invalid credentials](screenshots/14-9.PNG)
 ![AuditLogs query showing no system changes in the same window](screenshots/14-11.PNG)
  
