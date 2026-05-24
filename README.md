@@ -966,6 +966,8 @@ gpresult /r /scope computer
 ### Scenario B -- Account Lockout
  
 **Break it:** Log in as `LAB\jcarter` with the wrong password 6 times.
+
+![Scenario B — referenced account is currently locked out error](screenshots/15-3.PNG)
  
 **Diagnose:**
  
@@ -979,7 +981,6 @@ Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 4740 } |
  
 Event ID 4740 shows which machine triggered the lockout.
  
-![Scenario B — referenced account is currently locked out error](screenshots/15-3.PNG)
 ![Scenario B — LockedOut status confirmed in PowerShell](screenshots/15-4.PNG)
  
 **Fix it:**
